@@ -21,7 +21,7 @@ fi
 # Check if pull_daily_commits.js is already set in the crontab
 if ! crontab -l | grep -q "$pull_script_path"; then
     # Add the script to the crontab to run once per hour
-    (crontab -l ; echo "0 * * * * cd $script_dir && ./pull_daily_commits.js") | crontab -
+    (crontab -l ; echo "5 * * * * cd $script_dir && ./pull_daily_commits.js") | crontab -
     echo "pull_daily_commits.js added to crontab to run once per hour with CWD set to $script_dir."
 else
     echo "pull_daily_commits.js is already set in crontab."
