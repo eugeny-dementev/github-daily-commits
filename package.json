@@ -2,6 +2,7 @@
   "name": "github-daily-commits",
   "version": "1.0.0",
   "description": "js cron job to show in macos bar daily commit status",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,6 +10,7 @@
   "author": "Eugeny Dementev",
   "license": "ISC",
   "dependencies": {
-    "anybar": "^5.1.0"
+    "anybar": "^5.1.0",
+    "node-fetch": "^3.3.2"
   }
 }
