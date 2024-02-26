@@ -1,0 +1,11 @@
+{
+  "name": "github-daily-commits",
+  "version": "1.0.0",
+  "description": "js cron job to show in macos bar daily commit status",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eugeny Dementev",
+  "license": "ISC"
+}
