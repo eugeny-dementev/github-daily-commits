@@ -18,6 +18,10 @@ elif [ "$number" -lt 7 ]; then
     echo -n "green" | nc -4u -w0 localhost 1738
 elif [ "$number" -lt 10 ]; then
     echo -n "yellow" | nc -4u -w0 localhost 1738
-else
+elif [ "$number" -lt 15 ]; then
     echo -n "red" | nc -4u -w0 localhost 1738
+elif [ "$number" -lt 20 ]; then
+    echo -n "question" | nc -4u -w0 localhost 1738
+else
+    echo -n "exclamation" | nc -4u -w0 localhost 1738
 fi
