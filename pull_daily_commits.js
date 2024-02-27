@@ -1,7 +1,8 @@
 #!/usr/local/bin/node
 
-import { writeFileSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import fetch from 'node-fetch';
+import path from 'path';
 
 function getTodaysDate() {
   const date = new Date();
@@ -35,13 +36,30 @@ async function fetchCommits() {
   const tooltipId = /(tooltip\-[0-9a-zA-Z\-]+)/.exec(td)[0];
 
   // Extract the number of contributions
-  const contributionsRegex = new RegExp(`<.+id=\"${tooltipId}\".+>([0-9]+).+<`);
+  const contributionsRegex = new RegExp(`<.+id="${tooltipId}".+>([0-9]+).+<`);
   const contributions = contributionsRegex.exec(html)[1];
 
   console.log(`Found contributions for the day ${today}: ${contributions}`);
 
+  // Determine the file path based on the platform
+  const homeDir = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'];
+  const dirPath = path.join(homeDir, '.config', 'github-daily-commits');
+  const filePath = path.join(dirPath, 'commits.txt');
+
+  // Check if the directory exists, if not create it
+  if (!existsSync(dirPath)) {
+    mkdirSync(dirPath, { recursive: true });
+    console.log(`Directory ${dirPath} created.`);
+  }
+
+  // Check if the file exists
+  if (!existsSync(filePath)) {
+    // Create the file with 0 as its content
+    writeFileSync(filePath, '0');
+    console.log(`File ${filePath} created with initial content '0'.`);
+  }
+
   // Store the number of contributions in the file
-  const filePath = `${process.env.HOME}/.config/github-daily-commits/commits.txt`;
   writeFileSync(filePath, contributions);
 }
 
