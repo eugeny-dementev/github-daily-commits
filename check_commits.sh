@@ -21,7 +21,7 @@ elif [ "$number" -lt 10 ]; then
 elif [ "$number" -lt 13 ]; then
     echo -n "red" | nc -4u -w0 localhost 1738
 elif [ "$number" -lt 15 ]; then
-    echo -n "black" | nc -4u -w0 localhost 1738
+    echo -n "filled" | nc -4u -w0 localhost 1738
 elif [ "$number" -lt 18 ]; then
     echo -n "question" | nc -4u -w0 localhost 1738
 else
