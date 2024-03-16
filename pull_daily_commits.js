@@ -1,6 +1,6 @@
 #!/usr/local/bin/node
 
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { appendFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import fetch from 'node-fetch';
 import path from 'path';
 
@@ -16,35 +16,52 @@ function getTodaysDate() {
 async function fetchCommits() {
   const username = process.env.GITHUB_USERNAME;
 
-  if (!username) throw new Error('GITHUB_USERNAME env is empty');
 
-  const response = await fetch(`https://github.com/${username}`);
-  const html = await response.text();
+  if (!username) throw new Error('GITHUB_USERNAME env is empty');
 
   const today = getTodaysDate();
 
-  console.log(`Searching contributions for ${today}`);
+  let contributions = 0;
 
-  const tdRegExp = new RegExp(`data-date="${today}"[\\S\\s]+tool-tip>`, 'g');
-
-  const extractedTd = html.match(tdRegExp);
-
-  // Extract the td containing data for the current date
-  const td = extractedTd[0];
-
-  // Extract the tooltipId
-  const tooltipId = /(tooltip\-[0-9a-zA-Z\-]+)/.exec(td)[0];
-
-  // Extract the number of contributions
-  const contributionsRegex = new RegExp(`<.+id="${tooltipId}".+>([0-9]+).+<`);
-  const contributions = contributionsRegex.exec(html)[1];
-
-  console.log(`Found contributions for the day ${today}: ${contributions}`);
-
-  // Determine the file path based on the platform
   const homeDir = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'];
   const dirPath = path.join(homeDir, '.config', 'github-daily-commits');
   const filePath = path.join(dirPath, 'commits.txt');
+
+  try {
+    const response = await fetch(`https://github.com/${username}`);
+    const html = await response.text();
+
+    console.log(`Searching contributions for ${today}`);
+
+    const tdRegExp = new RegExp(`data-date="${today}"[\\S\\s]+tool-tip>`, 'g');
+
+    const extractedTd = html.match(tdRegExp);
+
+    // Extract the td containing data for the current date
+    const td = extractedTd[0];
+
+    // Extract the tooltipId
+    const tooltipId = /(tooltip\-[0-9a-zA-Z\-]+)/.exec(td)[0];
+
+    // Extract the number of contributions
+    const contributionsRegex = new RegExp(`<.+id="${tooltipId}".+>([0-9]+).+<`);
+    contributions = contributionsRegex.exec(html)[1];
+
+    console.log(`Found contributions for the day ${today}: ${contributions}`);
+
+    // Determine the file path based on the platform
+  } catch (e) {
+    const logPath = path.resolve('.', 'log.txt');
+    if (!existsSync(logPath)) {
+      writeFileSync(logPath, '');
+    }
+
+    console.error(e);
+
+    appendFileSync(logPath, `[${new Date()}][${today}] - ${e.message}\n`, (err) => {
+      if (err) console.error(err);
+    });
+  }
 
   // Check if the directory exists, if not create it
   if (!existsSync(dirPath)) {
@@ -60,7 +77,7 @@ async function fetchCommits() {
   }
 
   // Store the number of contributions in the file
-  writeFileSync(filePath, contributions);
+  writeFileSync(filePath, '' + contributions);
 }
 
 fetchCommits()
