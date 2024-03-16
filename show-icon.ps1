@@ -42,7 +42,7 @@ function Register-NotifyIcon {
 
 # Path to the text file and icons
 # $textFilePath = "C:\Data\Soft\github-commits\status.txt"
-$textFilePath = "$end:USERPROFILE\.config\github-daily-commits\commits.txt"
+$textFilePath = "$env:USERPROFILE\.config\github-daily-commits\commits.txt"
 $iconPaths = @("C:\Data\Soft\github-commits\icons\f0t0.ico", "C:\Data\Soft\github-commits\icons\f1t4.ico", "C:\Data\Soft\github-commits\icons\f5t6.ico", "C:\Data\Soft\github-commits\icons\f7t9.ico", "C:\Data\Soft\github-commits\icons\f10tX.ico") # Paths to your icons
 
 # Create the initial icon
