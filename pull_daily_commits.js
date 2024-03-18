@@ -51,16 +51,9 @@ async function fetchCommits() {
 
     // Determine the file path based on the platform
   } catch (e) {
-    const logPath = path.resolve('.', 'log.txt');
-    if (!existsSync(logPath)) {
-      writeFileSync(logPath, '');
-    }
-
     console.error(e);
 
-    appendFileSync(logPath, `[${new Date()}][${today}] - ${e.message}\n`, (err) => {
-      if (err) console.error(err);
-    });
+    log(`[${new Date()}][${today}] - ${e.message}\n`);
   }
 
   // Check if the directory exists, if not create it
@@ -78,6 +71,19 @@ async function fetchCommits() {
 
   // Store the number of contributions in the file
   writeFileSync(filePath, '' + contributions);
+
+  log(`[${new Date()}][${today}] - ${contributions} contributions found`);
+}
+
+function log(message) {
+  const logPath = path.resolve('.', 'log.txt');
+  if (!existsSync(logPath)) {
+    writeFileSync(logPath, '');
+  }
+
+  appendFileSync(logPath, `${message}\n`, (err) => {
+    if (err) console.error(err);
+  });
 }
 
 fetchCommits()
